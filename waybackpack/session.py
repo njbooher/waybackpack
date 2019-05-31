@@ -24,10 +24,11 @@ class Session(object):
             )
             if res.status_code != 200:
                 logger.info("HTTP status code: {0}".format(res.status_code))
-            if int(res.status_code / 100) == 5:
-                logger.info("Waiting 1 second before retrying.")
-                time.sleep(1)
-                continue
-            else:
-                response_is_final = True
+            response_is_final = True
+            # if int(res.status_code / 100) == 5:
+            #     logger.info("Waiting 1 second before retrying.")
+            #     time.sleep(1)
+            #     continue
+            #else:
+            #    response_is_final = True
         return res
