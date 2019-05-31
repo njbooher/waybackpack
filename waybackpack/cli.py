@@ -86,11 +86,8 @@ def main():
         collapse=args.collapse
     )
 
-    timestamps = [ snap["timestamp"] for snap in snapshots ]
-
     pack = Pack(
-        args.url,
-        timestamps=timestamps,
+        snapshots,
         session=session
     )
 

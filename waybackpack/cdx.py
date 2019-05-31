@@ -16,6 +16,7 @@ def search(url,
         "to": to_date,
         "showDupeCount": "true",
         "output": "json",
+        "matchType": "prefix",
         "collapse": collapse
     }).json()
     if len(cdx) < 2: return []

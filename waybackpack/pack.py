@@ -14,24 +14,12 @@ except ImportError:
 
 class Pack(object):
     def __init__(self,
-        url,
-        timestamps=None,
+        snapshots,
         uniques_only=False,
         session=None):
 
-        self.url = url
-        prefix = "http://" if urlparse(url).scheme == "" else  ""
-        self.full_url = prefix + url
-        self.parsed_url = urlparse(self.full_url)
-
         self.session = session or Session()
-
-        self.timestamps = timestamps or [ snap["timestamp"] for snap in search(
-            url,
-            uniques_only=uniques_only,
-            session=self.session
-        ) ]
-        self.assets = [ Asset(self.url, ts) for ts in self.timestamps ]
+        self.assets = [ Asset(snapshot["original"], snapshot["timestamp"]) for snapshot in snapshots ]
 
     def download_to(self, directory,
         raw=False,
@@ -39,14 +27,18 @@ class Pack(object):
         ignore_errors=False):
 
         for asset in self.assets:
-            path_head, path_tail = os.path.split(self.parsed_url.path)
+            url = asset.original_url
+            prefix = "http://" if urlparse(url).scheme == "" else  ""
+            full_url = prefix + url
+            parsed_url = urlparse(full_url)
+            path_head, path_tail = os.path.split(parsed_url.path)
             if path_tail == "":
                 path_tail = "index.html"
 
             filedir = os.path.join(
                 directory,
                 asset.timestamp,
-                self.parsed_url.netloc,
+                parsed_url.netloc,
                 path_head.lstrip("/")
             )
 
